@@ -92,30 +92,109 @@
 # #         if(i%100 is 0):
 # #             print(i,sess.run(W),'\tb:',sess.run(b))
 #
+# import tensorflow as tf
+# import os
+#
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# x_data=[1,2,3]
+# y_data=[0,1,1]
+#
+# X=tf.placeholder(tf.float32,shape=[None],name='X')
+# Y=tf.placeholder(tf.float32,shape=[None],name='Y')
+#
+# W=tf.Variable(tf.random_normal([1],-5,5))
+# b=tf.Variable(tf.random_normal([1],-5,5))
+#
+# hypoth=tf.sigmoid(W*X+b)
+# cost=-tf.reduce_mean(Y*tf.log(hypoth)+(1-Y)*tf.log(1-hypoth))
+# optimizer=tf.train.GradientDescentOptimizer(0.1).minimize(cost)
+#
+# with tf.Session() as sess:
+#
+#     sess.run(tf.global_variables_initializer())
+#
+#     for i in range(10000):
+#         sess.run(optimizer,feed_dict={X:x_data,Y:y_data})
+#         if(i%100 is 0):
+#             print(sess.run(W),sess.run(b))
+#
+#     predicted=tf.cast(hypoth>0.5,dtype=tf.float32)
+#     print(sess.run(predicted,feed_dict={X:x_data}))
+# import tensorflow as tf
+# import os
+#
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+#
+# x_data = [
+#     [1, 2, 1, 1],
+#     [2, 1, 3, 2],
+#     [3, 1, 3, 4],
+#     [4, 1, 5, 5],
+#     [1, 7, 5, 5],
+#     [1, 2, 5, 6],
+#     [1, 6, 6, 6],
+#     [1, 7, 7, 7]]
+#
+# y_data = [
+#     [0, 0, 1],
+#     [0, 0, 1],
+#     [0, 0, 1],
+#     [0, 1, 0],
+#     [0, 1, 0],
+#     [0, 1, 0],
+#     [1, 0, 0],
+#     [1, 0, 0]]
+#
+# X = tf.placeholder(tf.float32, shape=[None,4], name='X')
+# Y = tf.placeholder(tf.float32, shape=[None,3], name='Y')
+#
+# W = tf.Variable(tf.random_normal([4,3]))
+# b = tf.Variable(tf.random_normal([3]))
+#
+# H = tf.nn.softmax(tf.add(tf.matmul(X,W),b))
+# cost = -tf.reduce_mean(tf.reduce_sum(Y * tf.log(H)))
+# optimizer = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+#
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#
+#     with tf.Session() as sess:
+#         sess.run(tf.global_variables_initializer())
+#
+#         for i in range(30000):
+#             sess.run(optimizer,feed_dict={X:x_data,Y:y_data})
+#
+#             if(i%100 is 0):
+#                 print("step",i,'\n W \n',sess.run(W),'\n b \n',sess.run(b),'\n\n')
+#
+#         predicted=tf.cast(H>0.5,dtype=tf.float32)
+#         print(sess.run(predicted,feed_dict={X:x_data}))
+
 import tensorflow as tf
 import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-x_data=[1,2,3]
-y_data=[0,1,1]
+x_data = [3, 1, 40, 12]
+y_data = [11, 2, 125, 38]
 
-X=tf.placeholder(tf.float32,shape=[None],name='X')
-Y=tf.placeholder(tf.float32,shape=[None],name='Y')
+X = tf.placeholder(tf.float32, shape=[None], name='X')
+Y = tf.placeholder(tf.float32, shape=[None], name='Y')
 
-W=tf.Variable(tf.random_normal([1],-5,5))
-b=tf.Variable(tf.random_normal([1],-5,5))
+W = tf.Variable(tf.random_normal([1]))
+b = tf.Variable(tf.random_normal([1]))
 
-hypoth=tf.sigmoid(W*X+b)
-cost=-tf.reduce_mean(Y*tf.log(hypoth)+(1-Y)*tf.log(1-hypoth))
-optimizer=tf.train.GradientDescentOptimizer(0.1).minimize(cost)
+Hy = W * X + b
+cost = tf.reduce_mean(tf.square(Y - Hy))
+optimizer = tf.train.GradientDescentOptimizer(0.001).minimize(cost)
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for i in range(10000):
-        sess.run(optimizer,feed_dict={X:x_data,Y:y_data})
-        if(i%100 is 0):
-            print(sess.run(W),sess.run(b))
-    predicted=tf.cast(hypoth>0.5,dtype=tf.float32)
-    print(sess.run(predicted,feed_dict={X:x_data}))
+        sess.run(optimizer, feed_dict={X: x_data, Y: y_data})
+        if (i % 100 is 0):
+            print(sess.run(W), sess.run(b))
+
+
 

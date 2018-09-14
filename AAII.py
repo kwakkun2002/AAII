@@ -211,15 +211,6 @@
 #
 # sess.close()
 
-# import tensorflow as tf
-# import os
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-#
-# a=tf.Variable(5)
-# a=10
-#
-# sess=tf.Session()
-# sess.run(tf.global_variables_initializer())
 
 
 
