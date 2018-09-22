@@ -263,7 +263,7 @@
 #
 #     print(sess.run(h4, feed_dict={X: x_data}))
 
-#9/22 숫자 맞추기 게임
+# 9/22 숫자 맞추기 게임
 # import tensorflow as tf
 # import os
 #
@@ -303,3 +303,115 @@
 #     answer=sess.run(Hy,feed_dict={X:[[20,20]]})
 #     print(int(answer))
 
+# 9/22 실험 1.일반적인 로지스틱도 레이어를 늘리면 될까? 상식적으로,될것 같다.왜냐하면 상식적으로 xor이나 그냥이나 같기 때문이다
+# 하지만 층이 여러개 필요한 상황에는 여러개를 쓰는것이다.
+# 실험2.cost와 hy를 미리 만들순 없을까?함수로?ㅋㅋ됨,Easy.py만듬ㅋ
+# import tensorflow as tf
+# import Easy
+#
+# Easy.NoRedLine()
+#
+# x_data = [[1],
+#           [2],
+#           [3],
+#           [4]]
+#
+# y_data = [[1],
+#           [2],
+#           [3],
+#           [4]]
+#
+# X = Easy.Inputplace([None, 1], 'X')
+# Y = Easy.Inputplace([None, 1], 'Y')
+#
+# W, b = Easy.Layer('W', [1, 1], 'b', [1])
+# Hy = Easy.Hy(X, W, b, "l")
+#
+# cost = Easy.cost(Y, Hy, "l")
+# optimizer = Easy.Optimizer(0.001, cost, "G")
+#
+# with tf.Session() as sess:
+#     sess.run(Easy.g_v_init())
+#
+#     for i in range(30000):
+#         sess.run(optimizer, feed_dict={X: x_data, Y: y_data})
+#         cost_ = sess.run(cost, feed_dict={X: x_data, Y: y_data})
+#         if (i % 100 is 0):
+#             print(i, sess.run(W), '\tb:', sess.run(b))
+#     print(cost_)
+
+# 한번 9/21일자 xor문제를 east로 번역해야겠다
+# 9/21 다층 퍼셉트론 xor
+import tensorflow as tf
+import Easy as E
+
+E.NoRedLine()
+
+x_data = [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+]
+y_data = [
+    [0],
+    [1],
+    [1],
+    [0]
+]
+
+# X = tf.placeholder(tf.float32, shape=[None, 2])
+X = E.Inputplace([None, 2], 'X')
+# Y = tf.placeholder(tf.float32, shape=[None, 1])
+Y = E.Inputplace([None, 1], 'Y')
+
+# # W1 = tf.Variable(tf.random_normal([2, 100]), name='W1')
+# W1 = E.Store.Make_W([2, 100], 'W1')
+# # b1 = tf.Variable(tf.random_normal([100]), name='b1')
+# b1 = E.Store.Make_b([100], 'b1')
+# # h1 = tf.nn.sigmoid(tf.add(tf.matmul(X, W1), b1))
+W1,b1=E.Layer().Insatane('W1',[2,100],'b1',[100])
+h1 = E.Layer().Hy(X, W1, b1,"s")
+
+# # W2 = tf.Variable(tf.random_normal([100, 100]), name='W2')
+# W2 = E.Store.Make_W([100, 100], 'W2')
+# # b2 = tf.Variable(tf.random_normal([100]), name='b2')
+# b2 = E.Store.Make_b([100], 'b2')
+# # h2 = tf.nn.sigmoid(tf.add(tf.matmul(h1, W2), b2))
+# h2 = E.Hy.Make_Hy_sig(h1, W2, b2)
+W2,b2=E.Layer().Insatane('W2',[100,100],'b2',[100])
+h2=E.Layer().Hy(h1,W2,b2,"s")
+
+# # W3 = tf.Variable(tf.random_normal([100, 100]), name='W3')
+# W3 = E.Store.Make_W([100, 100], 'W3')
+# # b3 = tf.Variable(tf.random_normal([100]), name='b3')
+# b3 = E.Store.Make_b([100], 'b3')
+# # h3 = tf.nn.sigmoid(tf.add(tf.matmul(h2, W3), b3))
+# h3 = E.Hy.Make_Hy_sig(h2, W3, b3)
+W3,b3=E.Layer().Insatane('W3',[100,100],'b3',[100])
+h3=E.Layer().Hy(h2,W3,b3,"s")
+
+# # W4 = tf.Variable(tf.random_normal([100, 1]), name='W4')
+# W4 = E.Store.Make_W([100, 1], 'W4')
+# # b4 = tf.Variable(tf.random_normal([1]), name='b4')
+# b4 = E.Store.Make_b([1], 'b4')
+# # h4 = tf.nn.sigmoid(tf.add(tf.matmul(h3, W4), b4))
+# h4 = E.Hy.Make_Hy_sig(h3, W4, b4)
+W4,b4=E.Layer().Insatane('W4',[100,1],'b4',[1])
+h4=E.Layer().Hy(h3,W4,b4,"s")
+
+cost = E.cost(Y,h4,"s")
+optimizer=E.Optimizer(0.01,cost,"Gra")
+
+with tf.Session() as sess:
+    sess.run(E.g_v_init())
+    for i in range(10000):
+        sess.run(optimizer, feed_dict={X: x_data, Y: y_data})
+        cost_ = sess.run(cost, feed_dict={X: x_data, Y: y_data})
+
+        if (i % 100 is 0):
+            print(sess.run([W1, W2]))
+            print(cost_)
+            print()
+
+    print(sess.run(h4, feed_dict={X: x_data}))
